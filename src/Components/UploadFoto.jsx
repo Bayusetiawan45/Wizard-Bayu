@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { createRef } from "react";
+import Tesseract from "tesseract.js";
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -12,9 +13,10 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const UploadFoto = ({ callback }) => {
+const UploadFoto = ({ setImageToState, setNik }) => {
   const uploadRef = createRef();
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [imageUrl, setImageUrl] = useState();
 
   const uploadButton = (
@@ -25,17 +27,39 @@ const UploadFoto = ({ callback }) => {
           marginTop: 8,
         }}
       >
-        Upload
+        {loading ? `Getting NIK in progress (${progress}%)` : "Upload"}
       </div>
     </div>
   );
 
+  const handleRecognizeText = async (file) => {
+    const results = await Tesseract.recognize(file, "eng", {
+      logger: (m) =>
+        m.status === "recognizing text" &&
+        setProgress(Math.ceil(m.progress * 100)),
+    });
+    const nik = results.data.lines
+      .find((item) => item.text.includes("NIK") && item.text.includes(":"))
+      .words.find((item) => item.text.length >= 16).text;
+    setNik && setNik(nik);
+  };
+
   const handleSelect = async (e) => {
     let file = e.target.files[0];
     if (!file) return;
+    setLoading(true);
+    setNik && (await handleRecognizeText(file));
     setImageUrl(URL.createObjectURL(file));
     const base64uri = await getBase64(file);
-    callback(base64uri);
+    setImageToState(base64uri);
+    setLoading(false);
+    // .progress(({ progress, status }) => {
+    //   if (!progress || !status || status !== "recognizing text") {
+    //     return null;
+    //   }
+    //   const p = (progress * 100).toFixed(2);
+    //   console.log(p);
+    // });
   };
 
   return (

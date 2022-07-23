@@ -19,6 +19,7 @@ function App() {
     kelurahan: "",
     selfie: "",
     ktp: "",
+    nik: "",
     bebas: "",
   });
 
@@ -46,9 +47,9 @@ function App() {
         }}
       >
         <Steps current={currentStep} onChange={onChangeStep}>
-          <Step title="Formulir Klaim" description="This is a description." />
-          <Step title="Registrasi Klaim" description="This is a description." />
-          <Step title="Finish" description="This is a description." />
+          <Step title="Formulir Klaim" />
+          <Step title="Registrasi Klaim" />
+          <Step title="Finish" />
         </Steps>
       </Space>
       <Space style={{ display: currentStep !== 0 ? "none" : "initial" }}>
@@ -65,7 +66,9 @@ function App() {
               }}
             >
               <Title level={5}>Foto Selfie</Title>
-              <UploadFoto callback={(url) => handleUpload("selfie", url)} />
+              <UploadFoto
+                setImageToState={(url) => handleUpload("selfie", url)}
+              />
             </Row>
             <Row
               style={{
@@ -76,7 +79,10 @@ function App() {
               }}
             >
               <Title level={5}>Foto KTP</Title>
-              <UploadFoto callback={(url) => handleUpload("ktp", url)} />
+              <UploadFoto
+                setImageToState={(url) => handleUpload("ktp", url)}
+                setNik={(nik) => handleUpload("nik", nik)}
+              />
             </Row>
             <Row
               style={{
@@ -87,13 +93,15 @@ function App() {
               }}
             >
               <Title level={5}>Foto Bebas</Title>
-              <UploadFoto callback={(url) => handleUpload("bebas", url)} />
+              <UploadFoto
+                setImageToState={(url) => handleUpload("bebas", url)}
+              />
             </Row>
           </Col>
         </Row>
       </Space>
       <Space style={{ display: currentStep !== 2 ? "none" : "initial" }}>
-        <Finish data={form}/>
+        <Finish data={form} />
       </Space>
     </div>
   );
