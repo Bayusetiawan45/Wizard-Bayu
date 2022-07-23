@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# Hello there! Welcome to my project
 
-Hello there! My name is Bayu Setiawan as a frontend developer.
+My name is Bayu Setiawan as a frontend developer.
 
 This project was bootstrapped with React JS and ANT Design
 
